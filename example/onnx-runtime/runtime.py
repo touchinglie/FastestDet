@@ -146,17 +146,19 @@ if __name__ == "__main__":
             names.append(line.strip())
 
     print("=================box info===================")
-    for b in bboxes:
-        print(b)
-        obj_score, cls_index = b[4], int(b[5])
-        x1, y1, x2, y2 = int(b[0]), int(b[1]), int(b[2]), int(b[3])
+    # 防止没有预测框的情况
+    if bboxes != [None]:
+        for b in bboxes:
+            print(b)
+            obj_score, cls_index = b[4], int(b[5])
+            x1, y1, x2, y2 = int(b[0]), int(b[1]), int(b[2]), int(b[3])
 
-        # 防止推理的内容带numpy的只读属性，复制一份（会整型丢失精度）
-        img = img.astype(np.uint8)
-        # 绘制检测框
-        cv2.rectangle(img, (x1, y1), (x2, y2), (255, 255, 0), 2)
-        cv2.putText(img, "%.2f" % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)
-        cv2.putText(img, names[cls_index], (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
+            # 防止推理要绘制的内容带numpy的只读属性，复制一份（会整型丢失精度）
+            img = img.astype(np.uint8)
+            # 绘制检测框
+            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 255, 0), 2)
+            cv2.putText(img, "%.2f" % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)
+            cv2.putText(img, names[cls_index], (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
 
     # 保存结果图片
     cv2.imwrite("result.jpg", img)
